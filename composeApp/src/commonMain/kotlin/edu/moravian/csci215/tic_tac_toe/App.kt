@@ -32,14 +32,18 @@ fun App() {
                     TitleScreen(
                         snackbarHostState = snackbarHostState,
                         onStartGame = { _, _ ->
-                            navController.navigate(Game)
+                            navController.navigate(Game) {
+                                launchSingleTop = true
+                            }
                         },
                     )
                 }
                 composable<Game> {
                     GameScreen()
                 }
-                composable<End> {}
+                composable<End> {
+                    EndScreen()
+                }
             }
         }
     }
