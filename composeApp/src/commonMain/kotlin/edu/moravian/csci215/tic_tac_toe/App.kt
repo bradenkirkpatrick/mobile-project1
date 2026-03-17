@@ -1,25 +1,41 @@
 package edu.moravian.csci215.tic_tac_toe
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+
+/**
+ * Root composable hosting navigation and the shared scaffold.
+ */
 @Composable
 fun App() {
     val navController = rememberNavController()
-    MaterialTheme ()
-    {
-        Scaffold() { innerPadding ->
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    MaterialTheme {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) { innerPadding ->
             NavHost(
                 navController,
-                startDestination = Game,
+                startDestination = Title,
                 modifier = Modifier.padding(innerPadding),
             ) {
-                composable<Title> {}
+                composable<Title> {
+                    TitleScreen(
+                        snackbarHostState = snackbarHostState,
+                        onStartGame = { _, _ ->
+                            navController.navigate(Game)
+                        },
+                    )
+                }
                 composable<Game> {
                     GameScreen()
                 }

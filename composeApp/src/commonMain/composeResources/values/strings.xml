@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_title">Tic-Tac-Toe</string>
+    <string name="welcome_title">Welcome to Tic-Tac-Toe</string>
+    <string name="welcome_subtitle">Set up your players to begin</string>
+    <string name="player_title">Player %1$d</string>
+    <string name="player_name_label">Name</string>
+    <string name="player_type_label">Player Type</string>
+    <string name="start_game">Start Game</string>
+    <string name="error_name_required">Both players need a name.</string>
+
+    <string name="player_type_human">Human</string>
+    <string name="player_type_easy_ai">Easy AI</string>
+    <string name="player_type_medium_ai">Medium AI</string>
+    <string name="player_type_hard_ai">Hard AI</string>
+
+    <string name="random_name_1">Harper</string>
+    <string name="random_name_2">Riley</string>
+    <string name="random_name_3">Kai</string>
+    <string name="random_name_4">Sage</string>
+    <string name="random_name_5">Avery</string>
+    <string name="random_name_6">Quinn</string>
+    <string name="random_name_7">Rowan</string>
+    <string name="random_name_8">Ellis</string>
+</resources>

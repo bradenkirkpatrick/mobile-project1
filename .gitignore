@@ -1,0 +1,31 @@
+# Gradle and Kotlin build output
+.gradle/
+.kotlin/
+build/
+*/build/
+
+# Local Android SDK config
+local.properties
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Kotlin/Native and Xcode user data
+iosApp/.build/
+iosApp/Pods/
+iosApp/*.xcworkspace
+iosApp/*.xcodeproj/xcuserdata/
+iosApp/*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Compose/Desktop and packaged artifacts
+composeApp/release/
+composeApp/debug/
