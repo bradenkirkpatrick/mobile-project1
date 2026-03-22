@@ -11,8 +11,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +23,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import edu.moravian.csci215.tic_tac_toe.game.EasyAIPlayer
+import edu.moravian.csci215.tic_tac_toe.game.HardAIPlayer
+import edu.moravian.csci215.tic_tac_toe.game.HumanPlayer
+import edu.moravian.csci215.tic_tac_toe.game.MediumAIPlayer
+import edu.moravian.csci215.tic_tac_toe.game.Player
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -40,11 +45,20 @@ enum class PlayerType(val label: String) {
     EasyAI("Easy AI"),
     MediumAI("Medium AI"),
     HardAI("Hard AI"),
+    ;
+    val ai get() = getAI()
+    fun getAI(): Player = when (this) {
+        Human -> HumanPlayer()
+        EasyAI -> EasyAIPlayer()
+        MediumAI -> MediumAIPlayer()
+        HardAI -> HardAIPlayer()
+    }
 }
 
 /**
  * The user-entered setup data for one player.
  */
+@Serializable
 data class PlayerConfig(
     val name: String,
     val type: PlayerType,
@@ -59,9 +73,10 @@ fun TitleScreen(
     onStartGame: (PlayerConfig, PlayerConfig) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val randomNames = remember {
-        listOf("Harper", "Riley", "Kai", "Sage", "Avery", "Quinn", "Rowan", "Ellis")
-    }
+    val randomNames =
+        remember {
+            listOf("Harper", "Riley", "Kai", "Sage", "Avery", "Quinn", "Rowan", "Ellis")
+        }
 
     var playerOneName by remember { mutableStateOf(randomNames.random()) }
     var playerTwoName by remember { mutableStateOf(randomNames.random()) }
@@ -69,9 +84,10 @@ fun TitleScreen(
     var playerTwoType by remember { mutableStateOf(PlayerType.Human) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Text(
@@ -134,9 +150,10 @@ private fun PlayerSetupCard(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
@@ -168,8 +185,9 @@ private fun PlayerTypeDropdown(
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedButton(
             onClick = { expanded = true },
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             Text("Player Type: ${selectedType.label}")
         }

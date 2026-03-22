@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object End
 
-
 @Composable
 fun EndScreen() {}

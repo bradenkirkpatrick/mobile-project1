@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 
 /**
  * Root composable hosting navigation and the shared scaffold.
@@ -22,28 +23,26 @@ fun App() {
     MaterialTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) { innerPadding ->
+        ) {
             NavHost(
                 navController,
-                startDestination = Title,
-                modifier = Modifier.padding(innerPadding),
+                startDestination = Title
             ) {
                 composable<Title> {
                     TitleScreen(
                         snackbarHostState = snackbarHostState,
-                        onStartGame = { _, _ ->
-                            navController.navigate(Game) {
-                                launchSingleTop = true
-                            }
+                        onStartGame = { player1, player2 ->
+                            val game = Game(player1.name, player2.name, player1.type.label, player2.type.label)
+                            navController.navigate(game)
                         },
                     )
                 }
                 composable<Game> {
-                    GameScreen()
+                    thegame ->
+                    val game = thegame.toRoute<Game>()
+                    GameScreen(game)
                 }
-                composable<End> {
-                    EndScreen()
-                }
+                composable<End> {}
             }
         }
     }
