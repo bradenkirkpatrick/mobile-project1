@@ -46,9 +46,21 @@ fun App() {
                         game = game,
                         snackbarHostState = snackbarHostState,
                         onBack = { navController.popBackStack() },
+                        onRoundOver = { end -> navController.navigate(end) },
                     )
                 }
-                composable<End> {}
+                composable<End> {
+                    endEntry ->
+                    val end = endEntry.toRoute<End>()
+                    EndScreen(
+                        end = end,
+                        onPlayAgain = { nextGame ->
+                            navController.navigate(nextGame) {
+                                popUpTo(Title)
+                            }
+                        },
+                    )
+                }
             }
         }
     }

@@ -50,6 +50,9 @@ data class Game(
     val player2: String,
     val player1Type: String,
     val player2Type: String,
+    val player1Wins: Int = 0,
+    val player2Wins: Int = 0,
+    val ties: Int = 0,
 )
 
 @Serializable
@@ -74,6 +77,7 @@ fun GameScreen(
     game: Game,
     snackbarHostState: SnackbarHostState,
     onBack: () -> Unit,
+    onRoundOver: (End) -> Unit,
 ) {
     val player1 = GamePlayer(game.player1, game.player1Type)
     val player2 = GamePlayer(game.player2, game.player2Type)
@@ -83,6 +87,52 @@ fun GameScreen(
 
     val currentPlayer = if (board.turn == 'X') player1 else player2
     val aiTurn = !board.isGameOver && currentPlayer.ai is AIPlayer
+
+    LaunchedEffect(board.isGameOver) {
+        if (!board.isGameOver) return@LaunchedEffect
+
+        val endState =
+            when {
+                board.hasWon('X') ->
+                    End(
+                        player1 = game.player1,
+                        player2 = game.player2,
+                        player1Type = game.player1Type,
+                        player2Type = game.player2Type,
+                        player1Wins = game.player1Wins + 1,
+                        player2Wins = game.player2Wins,
+                        ties = game.ties,
+                        outcome = "PLAYER_1_WIN",
+                        winnerName = game.player1,
+                    )
+                board.hasWon('O') ->
+                    End(
+                        player1 = game.player1,
+                        player2 = game.player2,
+                        player1Type = game.player1Type,
+                        player2Type = game.player2Type,
+                        player1Wins = game.player1Wins,
+                        player2Wins = game.player2Wins + 1,
+                        ties = game.ties,
+                        outcome = "PLAYER_2_WIN",
+                        winnerName = game.player2,
+                    )
+                else ->
+                    End(
+                        player1 = game.player1,
+                        player2 = game.player2,
+                        player1Type = game.player1Type,
+                        player2Type = game.player2Type,
+                        player1Wins = game.player1Wins,
+                        player2Wins = game.player2Wins,
+                        ties = game.ties + 1,
+                        outcome = "TIE",
+                        winnerName = null,
+                    )
+            }
+
+        onRoundOver(endState)
+    }
 
     LaunchedEffect(board) {
         val activePlayer = if (board.turn == 'X') player1 else player2
