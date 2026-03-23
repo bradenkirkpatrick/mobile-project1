@@ -5,7 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,10 +24,11 @@ fun App() {
     MaterialTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) {
+        ) { innerPadding ->
             NavHost(
                 navController,
-                startDestination = Title
+                startDestination = Title,
+                modifier = Modifier.padding(innerPadding),
             ) {
                 composable<Title> {
                     TitleScreen(
@@ -40,7 +42,11 @@ fun App() {
                 composable<Game> {
                     thegame ->
                     val game = thegame.toRoute<Game>()
-                    GameScreen(game)
+                    GameScreen(
+                        game = game,
+                        snackbarHostState = snackbarHostState,
+                        onBack = { navController.popBackStack() },
+                    )
                 }
                 composable<End> {}
             }
