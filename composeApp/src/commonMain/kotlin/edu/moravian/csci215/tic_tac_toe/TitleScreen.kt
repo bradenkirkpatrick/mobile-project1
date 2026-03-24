@@ -30,6 +30,13 @@ import edu.moravian.csci215.tic_tac_toe.game.MediumAIPlayer
 import edu.moravian.csci215.tic_tac_toe.game.Player
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringArrayResource
+import org.jetbrains.compose.resources.stringResource
+import tictactoe.composeapp.generated.resources.Res
+import tictactoe.composeapp.generated.resources.*
+
+
 
 /**
  * Navigation route for the welcome screen.
@@ -40,11 +47,11 @@ data object Title
 /**
  * The supported player types for a round of tic-tac-toe.
  */
-enum class PlayerType(val label: String) {
-    Human("Human"),
-    EasyAI("Easy AI"),
-    MediumAI("Medium AI"),
-    HardAI("Hard AI"),
+enum class PlayerType(val label: String, val display: StringResource) {
+    Human("Human", Res.string.human_display),
+    EasyAI("Easy AI", Res.string.easy_ai_display),
+    MediumAI("Medium AI", Res.string.medium_ai_display),
+    HardAI("Hard AI", Res.string.hard_ai_display),
     ;
     val ai get() = getAI()
     fun getAI(): Player = when (this) {
@@ -73,11 +80,8 @@ fun TitleScreen(
     onStartGame: (PlayerConfig, PlayerConfig) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val randomNames =
-        remember {
-            listOf("Harper", "Riley", "Kai", "Sage", "Avery", "Quinn", "Rowan", "Ellis")
-        }
-
+    val randomNames = stringArrayResource(Res.array.randomNames).toList()
+    val noNameErrorMessage = stringResource(Res.string.no_name_error)
     var playerOneName by remember { mutableStateOf(randomNames.random()) }
     var playerTwoName by remember { mutableStateOf(randomNames.random()) }
     var playerOneType by remember { mutableStateOf(PlayerType.Human) }
@@ -91,17 +95,17 @@ fun TitleScreen(
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Text(
-            text = "Welcome to Tic-Tac-Toe",
+            text = stringResource(Res.string.title),
             style = MaterialTheme.typography.headlineMedium,
         )
         Text(
-            text = "Set up both players before starting the round.",
+            text = stringResource(Res.string.subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         PlayerSetupCard(
-            title = "Player 1",
+            title = stringResource(Res.string.player_one),
             currentName = playerOneName,
             onNameChange = { playerOneName = it },
             selectedType = playerOneType,
@@ -109,7 +113,7 @@ fun TitleScreen(
         )
 
         PlayerSetupCard(
-            title = "Player 2",
+            title = stringResource(Res.string.player_two),
             currentName = playerTwoName,
             onNameChange = { playerTwoName = it },
             selectedType = playerTwoType,
@@ -123,7 +127,7 @@ fun TitleScreen(
 
                 if (trimmedOne.isBlank() || trimmedTwo.isBlank()) {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Both players need a name before the game can start.")
+                        snackbarHostState.showSnackbar(noNameErrorMessage)
                     }
                     return@Button
                 }
@@ -135,7 +139,7 @@ fun TitleScreen(
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Start Game")
+            Text(stringResource(Res.string.start_game_button))
         }
     }
 }
@@ -168,7 +172,7 @@ private fun PlayerSetupCard(
                 value = currentName,
                 onValueChange = onNameChange,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Name") },
+                label = { Text(stringResource(Res.string.name_field_label)) },
                 singleLine = true,
             )
         }
@@ -189,7 +193,7 @@ private fun PlayerTypeDropdown(
                 Modifier
                     .fillMaxWidth(),
         ) {
-            Text("Player Type: ${selectedType.label}")
+            Text(stringResource(Res.string.type_field) + stringResource(selectedType.display))
         }
 
         DropdownMenu(
@@ -198,7 +202,7 @@ private fun PlayerTypeDropdown(
         ) {
             PlayerType.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(type.label) },
+                    text = { Text(stringResource(type.display)) },
                     onClick = {
                         onTypeSelected(type)
                         expanded = false

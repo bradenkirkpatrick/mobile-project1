@@ -7,18 +7,63 @@
     <string name="player_type_label">Player Type</string>
     <string name="start_game">Start Game</string>
     <string name="error_name_required">Both players need a name.</string>
-
     <string name="player_type_human">Human</string>
     <string name="player_type_easy_ai">Easy AI</string>
     <string name="player_type_medium_ai">Medium AI</string>
     <string name="player_type_hard_ai">Hard AI</string>
+    <string name="resultMessagePlayer1Part1">Player 1 won this round.</string>
+    <string name="resultMessagePlayer1Part2">claimed the board as X.</string>
+    <string name="resultMessagePlayer2Part1">Player 2 won this round.</string>
+    <string name="resultMessagePlayer2Part2">claimed the board as O.</string>
+    <string name="resultMessageDraw">This round ended in a tie. Neither player completed three in a row.</string>
+    <string name="gameOver">Game Over</string>
+    <string name="backToTitle">Back</string>
+    <string name="overallScore1">Overall score: </string>
+    <string name="overallScore2"> has </string>
+    <string name="overallScore3"> win(s), </string>
+    <string name="overallScore4"> has </string>
+    <string name="overallScore5"> win(s), and there have been </string>
+    <string name="overallScore6"> tie(s).</string>
+    <string name="playAgain">Play Again</string>
+    <string name="notEmptyError">That space is already taken. Choose an empty square.</string>
+    <string name="stillThinkingError"> is still thinking. Wait for the AI to place </string>
+    <string name="gameoverTie"> Game over. The board is full, so this round ended in a tie.</string>
+    <string name="gameoverX"> won with X. Game over.</string>
+    <string name="gameoverO"> won with O. Game over.</string>
+    <string name="aiIsThinking1"> is up now with </string>
+    <string name="aiIsThinking2"> and is choosing a move.</string>
+    <string name="whosTurn">is the current player and will place</string>
+    <string name="tictactoeWelcome">Welcome to Tic-Tac-Toe</string>
+    <string name="title">Set up your players to begin</string>
+    <string name="subtitle">Set up both players before starting the round.</string>
+    <string name="player_one">Player 1</string>
+    <string name="player_two">Player 2</string>
+    <string name="no_name_error">Both players need a name before the game can start.</string>
+    <string name="start_game_button">Start Game</string>
+    <string name="name_field_label">Name</string>
+    <string name="type_field">Player Type: </string>
+    <string name="human_display">Human</string>
+    <string name="easy_ai_display">Easy AI</string>
+    <string name="medium_ai_display">Medium AI</string>
+    <string name="hard_ai_display">Hard AI</string>
 
-    <string name="random_name_1">Harper</string>
-    <string name="random_name_2">Riley</string>
-    <string name="random_name_3">Kai</string>
-    <string name="random_name_4">Sage</string>
-    <string name="random_name_5">Avery</string>
-    <string name="random_name_6">Quinn</string>
-    <string name="random_name_7">Rowan</string>
-    <string name="random_name_8">Ellis</string>
+
+
+    <string-array name="randomNames">
+        <item>Harper</item>
+        <item>Riley</item>
+        <item>Eugene</item>
+        <item>Rosa</item>
+        <item>Souphanouvong</item>
+        <item>Martin</item>
+        <item>Quinn</item>
+        <item>Emerson</item>
+        <item>Jordan</item>
+        <item>Charlie</item>
+        <item>Malcolm</item>
+        <item>Fidel</item>
+        <item>Josip</item>
+        <item>Che</item>
+        <item>Uncle Ho</item>
+    </string-array>
 </resources>

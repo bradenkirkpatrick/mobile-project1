@@ -43,6 +43,9 @@ import edu.moravian.csci215.tic_tac_toe.game.Player
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.stringResource
+import tictactoe.composeapp.generated.resources.Res
+import tictactoe.composeapp.generated.resources.*
 
 @Serializable
 data class Game(
@@ -84,6 +87,8 @@ fun GameScreen(
     var board by remember { mutableStateOf(Board()) }
     var aiThinking by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val notEmptyError = stringResource(Res.string.notEmptyError)
+    val stillThinkingError = stringResource(Res.string.stillThinkingError)
 
     val currentPlayer = if (board.turn == 'X') player1 else player2
     val aiTurn = !board.isGameOver && currentPlayer.ai is AIPlayer
@@ -153,12 +158,11 @@ fun GameScreen(
             snackbarHostState.showSnackbar(message)
         }
     }
-
     fun handleMove(row: Int, column: Int) {
         when {
             board.isGameOver -> Unit
-            aiTurn || aiThinking -> showError("${currentPlayer.name} is still thinking. Wait for the AI to place ${board.turn}.")
-            !board.emptyAt(row, column) -> showError("That space is already taken. Choose an empty square.")
+            aiTurn || aiThinking -> showError("${currentPlayer.name}${stillThinkingError}${board.turn}.")
+            !board.emptyAt(row, column) -> showError(notEmptyError)
             else -> {
                 board = board.playPiece(row, column) ?: board
             }
@@ -168,10 +172,10 @@ fun GameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tic-Tac-Toe") },
+                title = { Text(stringResource(Res.string.app_title)) },
                 navigationIcon = {
                     TextButton(onClick = onBack) {
-                        Text("Back")
+                        Text(stringResource(Res.string.backToTitle))
                     }
                 },
             )
@@ -243,11 +247,12 @@ private fun GameStatus(
 ) {
     val message =
         when {
-            board.hasWon('X') -> "Game over. ${playerNameForPiece(piece = 'X', xPlayer = xPlayer, oPlayer = oPlayer)} won with X."
-            board.hasWon('O') -> "Game over. ${playerNameForPiece(piece = 'O', xPlayer = xPlayer, oPlayer = oPlayer)} won with O."
-            board.hasTied -> "Game over. The board is full, so this round ended in a tie."
-            aiThinking -> "${currentPlayer.name} is up now with ${board.turn} and is choosing a move."
-            else -> "${currentPlayer.name} is the current player and will place ${board.turn}."
+            board.hasWon('X') -> playerNameForPiece('X', xPlayer, oPlayer) + stringResource(Res.string.gameoverX)
+            board.hasWon('O') -> playerNameForPiece('O', xPlayer, oPlayer) + stringResource(Res.string.gameoverO)
+            board.hasTied ->  stringResource(Res.string.gameoverTie)
+            aiThinking -> currentPlayer.name + stringResource(Res.string.aiIsThinking1) +
+                    board.turn + stringResource(Res.string.aiIsThinking2)
+            else -> "${currentPlayer.name} ${stringResource(Res.string.whosTurn)} ${board.turn}."
         }
 
     Text(

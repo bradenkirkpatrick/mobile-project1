@@ -18,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.stringResource
+import tictactoe.composeapp.generated.resources.Res
+import tictactoe.composeapp.generated.resources.*
 
 @Serializable
 data class End(
@@ -40,15 +43,17 @@ fun EndScreen(
 ) {
     val resultMessage =
         when (end.outcome) {
-            "PLAYER_1_WIN" -> "Player 1 won this round. ${end.winnerName} claimed the board as X."
-            "PLAYER_2_WIN" -> "Player 2 won this round. ${end.winnerName} claimed the board as O."
-            else -> "This round ended in a tie. Neither player completed three in a row."
+            "PLAYER_1_WIN" -> "${stringResource(Res.string.resultMessagePlayer1Part1)} ${end.winnerName} " +
+                    stringResource(Res.string.resultMessagePlayer1Part2)
+            "PLAYER_2_WIN" -> "${stringResource(Res.string.resultMessagePlayer2Part1)} ${end.winnerName} " +
+                    stringResource(Res.string.resultMessagePlayer2Part2)
+            else -> stringResource(Res.string.resultMessageDraw)
         }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Game Over") },
+                title = { Text(stringResource(Res.string.gameOver)) },
                 navigationIcon = {
                     TextButton(
                         onClick = {
@@ -65,7 +70,7 @@ fun EndScreen(
                             )
                         },
                     ) {
-                        Text("Back")
+                        Text(stringResource(Res.string.backToTitle))
                     }
                 },
             )
@@ -86,7 +91,11 @@ fun EndScreen(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = "Overall score: ${end.player1} has ${end.player1Wins} win(s), ${end.player2} has ${end.player2Wins} win(s), and there have been ${end.ties} tie(s).",
+                text = stringResource(Res.string.overallScore1) + end.player1
+                        + stringResource(Res.string.overallScore2) + end.player1Wins
+                        + stringResource(Res.string.overallScore3) + end.player2
+                        + stringResource(Res.string.overallScore4) + end.player2Wins
+                        + stringResource(Res.string.overallScore5) + end.ties + stringResource(Res.string.overallScore6),
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
@@ -107,7 +116,7 @@ fun EndScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Play Again")
+                Text(stringResource(Res.string.playAgain))
             }
         }
     }
