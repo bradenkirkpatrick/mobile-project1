@@ -1,56 +1,105 @@
 package edu.moravian.csci215.tic_tac_toe
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
-private val LightColors =
-    lightColorScheme(
-        primary = Color(0xFF1E5B52),
-        onPrimary = Color(0xFFF7FAF8),
-        primaryContainer = Color(0xFFB8E2D7),
-        onPrimaryContainer = Color(0xFF0B312B),
-        secondary = Color(0xFF8C4F3D),
-        onSecondary = Color(0xFFFFF8F6),
-        secondaryContainer = Color(0xFFF3D0C3),
-        onSecondaryContainer = Color(0xFF442116),
-        tertiary = Color(0xFF596A8B),
-        onTertiary = Color(0xFFF8F9FF),
-        tertiaryContainer = Color(0xFFD8E2FF),
-        onTertiaryContainer = Color(0xFF132544),
-        background = Color(0xFFF6F0E8),
-        onBackground = Color(0xFF221D19),
-        surface = Color(0xFFFFF8F3),
-        onSurface = Color(0xFF221D19),
-        surfaceVariant = Color(0xFFE8DED4),
-        onSurfaceVariant = Color(0xFF514740),
-        outline = Color(0xFF85766A),
+val Pine900 = Color(0xFF041A13)
+val Pine800 = Color(0xFF0A2A1E)
+val Pine700 = Color(0xFF123D2C)
+val Pine600 = Color(0xFF1B5A41)
+val Moss500 = Color(0xFF2E7A56)
+val Mint200 = Color(0xFFA8D7C0)
+val Fog100 = Color(0xFFF5FBF8)
+val White = Color(0xFFFFFFFF)
+
+private val EvergreenColors =
+    darkColorScheme(
+        primary = White,
+        onPrimary = Pine800,
+        primaryContainer = Pine600,
+        onPrimaryContainer = White,
+        secondary = Mint200,
+        onSecondary = Pine800,
+        secondaryContainer = Pine700,
+        onSecondaryContainer = Fog100,
+        tertiary = Color(0xFFBCE8D1),
+        onTertiary = Pine800,
+        background = Pine900,
+        onBackground = White,
+        surface = Color(0xFF0D241C),
+        onSurface = White,
+        surfaceVariant = Color(0xFF16372A),
+        onSurfaceVariant = Color(0xFFD7E9E0),
+        outline = Color(0xFF6EA98B),
+        outlineVariant = Color(0xFF244A39),
+        error = Color(0xFFFFB4AB),
+        onError = Color(0xFF690005),
     )
 
-private val DarkColors =
-    darkColorScheme(
-        primary = Color(0xFF9FD0C4),
-        onPrimary = Color(0xFF063730),
-        primaryContainer = Color(0xFF1E5B52),
-        onPrimaryContainer = Color(0xFFB8E2D7),
-        secondary = Color(0xFFE0B9AB),
-        onSecondary = Color(0xFF532B1E),
-        secondaryContainer = Color(0xFF8C4F3D),
-        onSecondaryContainer = Color(0xFFF3D0C3),
-        tertiary = Color(0xFFBEC7EA),
-        onTertiary = Color(0xFF283857),
-        tertiaryContainer = Color(0xFF40506F),
-        onTertiaryContainer = Color(0xFFD8E2FF),
-        background = Color(0xFF171411),
-        onBackground = Color(0xFFEBE1D8),
-        surface = Color(0xFF1F1B18),
-        onSurface = Color(0xFFEBE1D8),
-        surfaceVariant = Color(0xFF514740),
-        onSurfaceVariant = Color(0xFFD4C3B8),
-        outline = Color(0xFF9F8F83),
+private val AppTypography =
+    Typography(
+        headlineLarge =
+            TextStyle(
+                fontWeight = FontWeight.Black,
+                fontSize = 46.sp,
+                lineHeight = 48.sp,
+                letterSpacing = (-1.1).sp,
+            ),
+        headlineMedium =
+            TextStyle(
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 34.sp,
+                lineHeight = 38.sp,
+                letterSpacing = (-0.6).sp,
+            ),
+        headlineSmall =
+            TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                lineHeight = 32.sp,
+                letterSpacing = (-0.4).sp,
+            ),
+        titleLarge =
+            TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                lineHeight = 28.sp,
+                letterSpacing = (-0.2).sp,
+            ),
+        titleMedium =
+            TextStyle(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.1.sp,
+            ),
+        bodyLarge =
+            TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.15.sp,
+            ),
+        bodyMedium =
+            TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp,
+                lineHeight = 21.sp,
+                letterSpacing = 0.2.sp,
+            ),
+        labelLarge =
+            TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
+                letterSpacing = 1.1.sp,
+            ),
     )
 
 @Composable
@@ -58,7 +107,8 @@ fun TicTacToeTheme(
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) DarkColors else LightColors,
+        colorScheme = EvergreenColors,
+        typography = AppTypography,
         content = content,
     )
 }

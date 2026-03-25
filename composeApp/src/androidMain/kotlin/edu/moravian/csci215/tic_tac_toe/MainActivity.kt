@@ -11,8 +11,8 @@ import androidx.compose.ui.tooling.preview.Preview
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(scrim = 0xFFF6F0F8.toInt(), darkScrim = 0xFF1D1B20.toInt()),
-            navigationBarStyle = SystemBarStyle.light(scrim = 0xFFF6F0F8.toInt(), darkScrim = 0xFF1D1B20.toInt()),
+            statusBarStyle = SystemBarStyle.dark(scrim = 0xFF041A13.toInt()),
+            navigationBarStyle = SystemBarStyle.dark(scrim = 0xFF041A13.toInt()),
         )
         super.onCreate(savedInstanceState)
 

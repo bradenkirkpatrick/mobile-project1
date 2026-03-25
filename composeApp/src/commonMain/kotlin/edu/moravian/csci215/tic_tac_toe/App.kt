@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -21,50 +22,52 @@ fun App() {
     val snackbarHostState = remember { SnackbarHostState() }
 
     TicTacToeTheme {
-        Scaffold(
-            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) { innerPadding ->
-            NavHost(
-                navController,
-                startDestination = Title,
-                modifier = Modifier.padding(innerPadding),
-            ) {
-                composable<Title> {
-                    TitleScreen(
-                        snackbarHostState = snackbarHostState,
-                        onStartGame = { player1, player2 ->
-                            val game = Game(player1.name, player2.name, player1.type, player2.type)
-                            navController.navigate(game)
-                        },
-                    )
-                }
-                composable<Game> {
-                    thegame ->
-                    val game = thegame.toRoute<Game>()
-                    GameScreen(
-                        game = game,
-                        snackbarHostState = snackbarHostState,
-                        onBack = { navController.popBackStack() },
-                        onRoundOver = { end -> navController.navigate(end) },
-                    )
-                }
-                composable<End> {
-                    endEntry ->
-                    val end = endEntry.toRoute<End>()
-                    EndScreen(
-                        end = end,
-                        onBackToTitle = {
-                            navController.navigate(Title) {
-                                popUpTo(Title) { inclusive = true }
-                            }
-                        },
-                        onPlayAgain = { nextGame ->
-                            navController.navigate(nextGame) {
-                                popUpTo<End> { inclusive = true }
-                            }
-                        },
-                    )
+        AppBackdrop {
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.18f),
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+            ) { innerPadding ->
+                NavHost(
+                    navController,
+                    startDestination = Title,
+                    modifier = Modifier.padding(innerPadding),
+                ) {
+                    composable<Title> {
+                        TitleScreen(
+                            snackbarHostState = snackbarHostState,
+                            onStartGame = { player1, player2 ->
+                                val game = Game(player1.name, player2.name, player1.type, player2.type)
+                                navController.navigate(game)
+                            },
+                        )
+                    }
+                    composable<Game> {
+                        thegame ->
+                        val game = thegame.toRoute<Game>()
+                        GameScreen(
+                            game = game,
+                            snackbarHostState = snackbarHostState,
+                            onBack = { navController.popBackStack() },
+                            onRoundOver = { end -> navController.navigate(end) },
+                        )
+                    }
+                    composable<End> {
+                        endEntry ->
+                        val end = endEntry.toRoute<End>()
+                        EndScreen(
+                            end = end,
+                            onBackToTitle = {
+                                navController.navigate(Title) {
+                                    popUpTo(Title) { inclusive = true }
+                                }
+                            },
+                            onPlayAgain = { nextGame ->
+                                navController.navigate(nextGame) {
+                                    popUpTo<End> { inclusive = true }
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }

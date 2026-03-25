@@ -14,8 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,10 +74,16 @@ fun EndScreen(
         }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.08f),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.gameOver)) },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 navigationIcon = {
                     IconButton(onClick = onBackToTitle) {
                         Icon(
@@ -150,19 +156,12 @@ private fun EndSummary(
     finalBoard: Board,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-    ) {
+    LuxeCard(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp),
+                    .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically),
         ) {
@@ -208,32 +207,25 @@ private fun PlayAgainPanel(
     onPlayAgain: (Game) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.widthIn(max = 420.dp),
-        shape = RoundedCornerShape(28.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            ),
-    ) {
+    LuxeCard(modifier = modifier.widthIn(max = 420.dp)) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp),
+                    .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
         ) {
             Text(
                 text = "Ready for another round?",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
             )
             Text(
                 text = "Replay with the same players and difficulty settings.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
             )
             Button(
@@ -251,6 +243,12 @@ private fun PlayAgainPanel(
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(22.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
             ) {
                 Text(stringResource(Res.string.playAgain))
             }

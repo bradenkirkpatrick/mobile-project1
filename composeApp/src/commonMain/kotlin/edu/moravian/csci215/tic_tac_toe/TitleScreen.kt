@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +14,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -177,35 +178,18 @@ fun TitleScreen(
 private fun TitleCopy(
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            ),
-    ) {
+    LuxeCard(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .align(Alignment.CenterStart),
             verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             Text(
-                text = stringResource(Res.string.title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-            Text(
-                text = stringResource(Res.string.subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-            Text(
-                text = "Classic strategy. Clean rounds. Responsive play.",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                text = "MIDNIGHT\nTIC TAC TOE",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -228,6 +212,11 @@ private fun PlayerSetupContent(
         modifier = modifier.widthIn(max = 640.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        Text(
+            text = "BUILD YOUR MATCH",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.secondary,
+        )
         PlayerSetupCard(
             title = stringResource(Res.string.player_one),
             currentName = playerOneName,
@@ -247,6 +236,12 @@ private fun PlayerSetupContent(
         Button(
             onClick = onStartGame,
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(22.dp),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
         ) {
             Text(stringResource(Res.string.start_game_button))
         }
@@ -261,17 +256,18 @@ private fun PlayerSetupCard(
     selectedType: PlayerType,
     onTypeSelected: (PlayerType) -> Unit,
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    LuxeCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .align(Alignment.CenterStart),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             PlayerTypeDropdown(
                 selectedType = selectedType,
@@ -283,6 +279,17 @@ private fun PlayerSetupCard(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(Res.string.name_field_label)) },
                 singleLine = true,
+                shape = RoundedCornerShape(20.dp),
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                        focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    ),
             )
         }
     }
@@ -299,6 +306,11 @@ private fun PlayerTypeDropdown(
         OutlinedButton(
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            colors =
+                ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
         ) {
             Text(stringResource(Res.string.type_field) + stringResource(selectedType.display))
         }

@@ -1,5 +1,7 @@
 package edu.moravian.csci215.tic_tac_toe
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -24,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +36,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
@@ -182,11 +187,17 @@ fun GameScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.08f),
         topBar = {
             TopAppBar(
                 windowInsets = WindowInsets(0, 0, 0, 0),
                 title = { Text(stringResource(Res.string.app_title)) },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -238,9 +249,8 @@ fun GameScreen(
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
                 ) {
-                    Spacer(modifier = Modifier.weight(1f))
                     GameStatus(
                         board = board,
                         xPlayer = player1,
@@ -252,9 +262,8 @@ fun GameScreen(
                     BoardDisplay(
                         board = board,
                         onCellSelected = ::handleMove,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(0.92f),
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -279,12 +288,44 @@ private fun GameStatus(
             else -> stringResource(Res.string.current_turn, currentPlayer.name, board.turn.toString())
         }
 
-    Text(
-        text = message,
-        modifier = modifier,
-        style = MaterialTheme.typography.titleLarge,
-        textAlign = TextAlign.Center,
-    )
+    LuxeCard(modifier = modifier) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(
+                text = "LIVE MATCH",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+            Text(
+                text = message,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                PlayerMarkerCard(
+                    label = "X",
+                    name = xPlayer.name,
+                    type = xPlayer.type.label,
+                    active = board.turn == 'X' && !board.isGameOver,
+                    modifier = Modifier.weight(1f),
+                )
+                PlayerMarkerCard(
+                    label = "O",
+                    name = oPlayer.name,
+                    type = oPlayer.type.label,
+                    active = board.turn == 'O' && !board.isGameOver,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
 }
 
 private fun playerNameForPiece(
@@ -300,22 +341,28 @@ internal fun BoardDisplay(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+    LuxeCard(
         modifier = modifier.aspectRatio(1f),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(4.dp),
-        userScrollEnabled = false,
+        padding = PaddingValues(16.dp),
+        expandContent = true,
     ) {
-        items(9) { index ->
-            val row = index / 3
-            val column = index % 3
-            TictactoeButton(
-                piece = board[row, column],
-                onClick = { onCellSelected(row, column) },
-                enabled = enabled,
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(4.dp),
+            userScrollEnabled = false,
+        ) {
+            items(9) { index ->
+                val row = index / 3
+                val column = index % 3
+                TictactoeButton(
+                    piece = board[row, column],
+                    onClick = { onCellSelected(row, column) },
+                    enabled = enabled,
+                )
+            }
         }
     }
 }
@@ -326,6 +373,21 @@ internal fun TictactoeButton(
     onClick: () -> Unit,
     enabled: Boolean = true,
 ) {
+    val isX = piece == 'X'
+    val isO = piece == 'O'
+    val containerColor =
+        when {
+            isX -> MaterialTheme.colorScheme.primary.copy(alpha = 0.92f)
+            isO -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surfaceVariant
+        }
+    val contentColor =
+        when {
+            isX -> MaterialTheme.colorScheme.onPrimary
+            isO -> MaterialTheme.colorScheme.onSecondaryContainer
+            else -> MaterialTheme.colorScheme.onSurfaceVariant
+        }
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -336,15 +398,70 @@ internal fun TictactoeButton(
         shape = RoundedCornerShape(20.dp),
         colors =
             ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = containerColor,
+                contentColor = contentColor,
+                disabledContainerColor = containerColor,
+                disabledContentColor = contentColor,
             ),
     ) {
         Text(
             text = if (piece == ' ') "" else piece.toString(),
             style = MaterialTheme.typography.headlineLarge,
+        )
+    }
+}
+
+@Composable
+private fun PlayerMarkerCard(
+    label: String,
+    name: String,
+    type: String,
+    active: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val borderColor = if (active) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outlineVariant
+    val background =
+        if (active) {
+            Brush.verticalGradient(
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.secondaryContainer,
+                        MaterialTheme.colorScheme.surface,
+                    ),
+            )
+        } else {
+            Brush.verticalGradient(
+                colors =
+                    listOf(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        MaterialTheme.colorScheme.surface,
+                    ),
+            )
+        }
+
+    Column(
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(22.dp))
+                .background(background)
+                .border(1.dp, borderColor, RoundedCornerShape(22.dp))
+                .padding(14.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = name,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = type,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
