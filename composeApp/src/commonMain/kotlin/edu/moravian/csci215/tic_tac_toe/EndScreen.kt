@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +12,10 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -117,21 +121,21 @@ fun EndScreen(
                 }
             } else {
                 Column(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     EndSummary(
                         resultMessage = resultMessage,
                         end = end,
                         finalBoard = finalBoard,
+                        modifier = Modifier.weight(1f),
                     )
+                    Spacer(modifier = Modifier.weight(0.05f))
                     PlayAgainPanel(
                         end = end,
                         onPlayAgain = onPlayAgain,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -146,43 +150,55 @@ private fun EndSummary(
     finalBoard: Board,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
     ) {
-        Text(
-            text = resultMessage,
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text =
-                stringResource(
-                    Res.string.overall_score,
-                    end.player1,
-                    end.player1Wins,
-                    end.player2,
-                    end.player2Wins,
-                    end.ties,
-                ),
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = stringResource(Res.string.final_board),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        BoardDisplay(
-            board = finalBoard,
-            onCellSelected = { _, _ -> },
-            enabled = false,
+        Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .sizeIn(maxWidth = 320.dp),
-        )
+                    .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically),
+        ) {
+            Text(
+                text = resultMessage,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text =
+                    stringResource(
+                        Res.string.overall_score,
+                        end.player1,
+                        end.player1Wins,
+                        end.player2,
+                        end.player2Wins,
+                        end.ties,
+                    ),
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = stringResource(Res.string.final_board),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            BoardDisplay(
+                board = finalBoard,
+                onCellSelected = { _, _ -> },
+                enabled = false,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .sizeIn(maxWidth = 240.dp),
+            )
+        }
     }
 }
 
@@ -192,28 +208,52 @@ private fun PlayAgainPanel(
     onPlayAgain: (Game) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Card(
         modifier = modifier.widthIn(max = 420.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        shape = RoundedCornerShape(28.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     ) {
-        Button(
-            onClick = {
-                onPlayAgain(
-                    Game(
-                        player1 = end.player1,
-                        player2 = end.player2,
-                        player1Type = end.player1Type,
-                        player2Type = end.player2Type,
-                        player1Wins = end.player1Wins,
-                        player2Wins = end.player2Wins,
-                        ties = end.ties,
-                    ),
-                )
-            },
-            modifier = Modifier.fillMaxWidth(),
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
         ) {
-            Text(stringResource(Res.string.playAgain))
+            Text(
+                text = "Ready for another round?",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Replay with the same players and difficulty settings.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                textAlign = TextAlign.Center,
+            )
+            Button(
+                onClick = {
+                    onPlayAgain(
+                        Game(
+                            player1 = end.player1,
+                            player2 = end.player2,
+                            player1Type = end.player1Type,
+                            player2Type = end.player2Type,
+                            player1Wins = end.player1Wins,
+                            player2Wins = end.player2Wins,
+                            ties = end.ties,
+                        ),
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(Res.string.playAgain))
+            }
         }
     }
 }

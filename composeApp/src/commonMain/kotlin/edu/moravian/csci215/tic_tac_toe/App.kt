@@ -1,7 +1,6 @@
 package edu.moravian.csci215.tic_tac_toe
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -21,9 +20,9 @@ fun App() {
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    MaterialTheme {
+    TicTacToeTheme {
         Scaffold(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
             snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
             NavHost(

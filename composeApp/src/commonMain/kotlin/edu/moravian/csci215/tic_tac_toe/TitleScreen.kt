@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
@@ -127,7 +130,10 @@ fun TitleScreen(
                 verticalAlignment = Alignment.Top,
             ) {
                 TitleCopy(
-                    modifier = Modifier.weight(0.9f),
+                    modifier =
+                        Modifier
+                            .weight(0.95f)
+                            .fillMaxHeight(),
                 )
                 PlayerSetupContent(
                     playerOneName = playerOneName,
@@ -171,19 +177,37 @@ fun TitleScreen(
 private fun TitleCopy(
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(32.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     ) {
-        Text(
-            text = stringResource(Res.string.title),
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = stringResource(Res.string.subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
+            Text(
+                text = stringResource(Res.string.title),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Text(
+                text = stringResource(Res.string.subtitle),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Text(
+                text = "Classic strategy. Clean rounds. Responsive play.",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        }
     }
 }
 

@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -186,6 +185,7 @@ fun GameScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(0, 0, 0, 0),
                 title = { Text(stringResource(Res.string.app_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -219,21 +219,19 @@ fun GameScreen(
                         oPlayer = player2,
                         currentPlayer = currentPlayer,
                         aiThinking = aiTurn || aiThinking,
-                        modifier = Modifier.weight(0.9f),
+                        modifier = Modifier.weight(1f),
                     )
-                    BoxWithConstraints(
-                        modifier =
-                            Modifier
-                                .weight(1.1f)
-                                .fillMaxHeight(),
-                        contentAlignment = Alignment.CenterEnd,
+                    Column(
+                        modifier = Modifier.weight(0.85f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
                     ) {
-                        val boardSize = if (maxHeight < maxWidth) maxHeight else maxWidth
                         BoardDisplay(
                             board = board,
                             onCellSelected = ::handleMove,
-                            modifier = Modifier.size(boardSize),
+                            modifier = Modifier.fillMaxWidth(0.82f),
                         )
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             } else {
@@ -242,6 +240,7 @@ fun GameScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
+                    Spacer(modifier = Modifier.weight(1f))
                     GameStatus(
                         board = board,
                         xPlayer = player1,
