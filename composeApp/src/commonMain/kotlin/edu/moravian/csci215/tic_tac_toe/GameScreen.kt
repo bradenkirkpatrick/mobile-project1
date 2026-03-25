@@ -7,20 +7,23 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,8 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import edu.moravian.csci215.tic_tac_toe.game.AIPlayer
 import edu.moravian.csci215.tic_tac_toe.game.Board
+import edu.moravian.csci215.tic_tac_toe.game.Board.Companion.toStringRepresentation
 import edu.moravian.csci215.tic_tac_toe.game.EasyAIPlayer
 import edu.moravian.csci215.tic_tac_toe.game.HardAIPlayer
 import edu.moravian.csci215.tic_tac_toe.game.HumanPlayer
@@ -45,14 +51,21 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.stringResource
 import tictactoe.composeapp.generated.resources.Res
-import tictactoe.composeapp.generated.resources.*
+import tictactoe.composeapp.generated.resources.ai_is_thinking
+import tictactoe.composeapp.generated.resources.app_title
+import tictactoe.composeapp.generated.resources.back
+import tictactoe.composeapp.generated.resources.current_turn
+import tictactoe.composeapp.generated.resources.gameoverTie
+import tictactoe.composeapp.generated.resources.gameoverWin
+import tictactoe.composeapp.generated.resources.notEmptyError
+import tictactoe.composeapp.generated.resources.stillThinkingError
 
 @Serializable
 data class Game(
     val player1: String,
     val player2: String,
-    val player1Type: String,
-    val player2Type: String,
+    val player1Type: PlayerType,
+    val player2Type: PlayerType,
     val player1Wins: Int = 0,
     val player2Wins: Int = 0,
     val ties: Int = 0,
@@ -61,17 +74,14 @@ data class Game(
 @Serializable
 data class GamePlayer(
     val name: String,
-    val type: String,
+    val type: PlayerType,
 ) {
-    val ai get() = getAI()
-
-    fun getAI(): Player =
-        when (type) {
-            "Easy AI" -> EasyAIPlayer()
-            "Medium AI" -> MediumAIPlayer()
-            "Hard AI" -> HardAIPlayer()
-            else -> HumanPlayer()
-        }
+    val ai: Player = when (type) {
+        PlayerType.Human -> HumanPlayer()
+        PlayerType.EasyAI -> EasyAIPlayer()
+        PlayerType.MediumAI -> MediumAIPlayer()
+        PlayerType.HardAI -> HardAIPlayer()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,10 +98,10 @@ fun GameScreen(
     var aiThinking by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val notEmptyError = stringResource(Res.string.notEmptyError)
-    val stillThinkingError = stringResource(Res.string.stillThinkingError)
 
     val currentPlayer = if (board.turn == 'X') player1 else player2
     val aiTurn = !board.isGameOver && currentPlayer.ai is AIPlayer
+    val stillThinkingError = stringResource(Res.string.stillThinkingError, currentPlayer.name, board.turn.toString())
 
     LaunchedEffect(board.isGameOver) {
         if (!board.isGameOver) return@LaunchedEffect
@@ -109,6 +119,7 @@ fun GameScreen(
                         ties = game.ties,
                         outcome = "PLAYER_1_WIN",
                         winnerName = game.player1,
+                        finalBoard = board.toStringRepresentation(),
                     )
                 board.hasWon('O') ->
                     End(
@@ -121,6 +132,7 @@ fun GameScreen(
                         ties = game.ties,
                         outcome = "PLAYER_2_WIN",
                         winnerName = game.player2,
+                        finalBoard = board.toStringRepresentation(),
                     )
                 else ->
                     End(
@@ -133,6 +145,7 @@ fun GameScreen(
                         ties = game.ties + 1,
                         outcome = "TIE",
                         winnerName = null,
+                        finalBoard = board.toStringRepresentation(),
                     )
             }
 
@@ -161,7 +174,7 @@ fun GameScreen(
     fun handleMove(row: Int, column: Int) {
         when {
             board.isGameOver -> Unit
-            aiTurn || aiThinking -> showError("${currentPlayer.name}${stillThinkingError}${board.turn}.")
+            aiTurn || aiThinking -> showError(stillThinkingError)
             !board.emptyAt(row, column) -> showError(notEmptyError)
             else -> {
                 board = board.playPiece(row, column) ?: board
@@ -170,12 +183,16 @@ fun GameScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(Res.string.app_title)) },
                 navigationIcon = {
-                    TextButton(onClick = onBack) {
-                        Text(stringResource(Res.string.backToTitle))
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.back),
+                        )
                     }
                 },
             )
@@ -202,13 +219,22 @@ fun GameScreen(
                         oPlayer = player2,
                         currentPlayer = currentPlayer,
                         aiThinking = aiTurn || aiThinking,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(0.9f),
                     )
-                    BoardDisplay(
-                        board = board,
-                        onCellSelected = ::handleMove,
-                        modifier = Modifier.weight(1.2f),
-                    )
+                    BoxWithConstraints(
+                        modifier =
+                            Modifier
+                                .weight(1.1f)
+                                .fillMaxHeight(),
+                        contentAlignment = Alignment.CenterEnd,
+                    ) {
+                        val boardSize = if (maxHeight < maxWidth) maxHeight else maxWidth
+                        BoardDisplay(
+                            board = board,
+                            onCellSelected = ::handleMove,
+                            modifier = Modifier.size(boardSize),
+                        )
+                    }
                 }
             } else {
                 Column(
@@ -247,12 +273,11 @@ private fun GameStatus(
 ) {
     val message =
         when {
-            board.hasWon('X') -> playerNameForPiece('X', xPlayer, oPlayer) + stringResource(Res.string.gameoverX)
-            board.hasWon('O') -> playerNameForPiece('O', xPlayer, oPlayer) + stringResource(Res.string.gameoverO)
-            board.hasTied ->  stringResource(Res.string.gameoverTie)
-            aiThinking -> currentPlayer.name + stringResource(Res.string.aiIsThinking1) +
-                    board.turn + stringResource(Res.string.aiIsThinking2)
-            else -> "${currentPlayer.name} ${stringResource(Res.string.whosTurn)} ${board.turn}."
+            board.hasWon('X') -> stringResource(Res.string.gameoverWin, playerNameForPiece('X', xPlayer, oPlayer), "X")
+            board.hasWon('O') -> stringResource(Res.string.gameoverWin, playerNameForPiece('O', xPlayer, oPlayer), "O")
+            board.hasTied -> stringResource(Res.string.gameoverTie)
+            aiThinking -> stringResource(Res.string.ai_is_thinking, currentPlayer.name, board.turn.toString())
+            else -> stringResource(Res.string.current_turn, currentPlayer.name, board.turn.toString())
         }
 
     Text(
@@ -270,10 +295,11 @@ private fun playerNameForPiece(
 ): String = if (piece == 'X') xPlayer.name else oPlayer.name
 
 @Composable
-private fun BoardDisplay(
+internal fun BoardDisplay(
     board: Board,
     onCellSelected: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -289,24 +315,32 @@ private fun BoardDisplay(
             TictactoeButton(
                 piece = board[row, column],
                 onClick = { onCellSelected(row, column) },
+                enabled = enabled,
             )
         }
     }
 }
 
 @Composable
-private fun TictactoeButton(
+internal fun TictactoeButton(
     piece: Char,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.aspectRatio(1f),
+        enabled = enabled,
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .aspectRatio(1f),
         shape = RoundedCornerShape(20.dp),
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurface,
             ),
     ) {
         Text(

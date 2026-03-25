@@ -23,6 +23,7 @@ fun App() {
 
     MaterialTheme {
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
             snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
             NavHost(
@@ -34,7 +35,7 @@ fun App() {
                     TitleScreen(
                         snackbarHostState = snackbarHostState,
                         onStartGame = { player1, player2 ->
-                            val game = Game(player1.name, player2.name, player1.type.label, player2.type.label)
+                            val game = Game(player1.name, player2.name, player1.type, player2.type)
                             navController.navigate(game)
                         },
                     )
@@ -54,9 +55,14 @@ fun App() {
                     val end = endEntry.toRoute<End>()
                     EndScreen(
                         end = end,
+                        onBackToTitle = {
+                            navController.navigate(Title) {
+                                popUpTo(Title) { inclusive = true }
+                            }
+                        },
                         onPlayAgain = { nextGame ->
                             navController.navigate(nextGame) {
-                                popUpTo(Title)
+                                popUpTo<End> { inclusive = true }
                             }
                         },
                     )
